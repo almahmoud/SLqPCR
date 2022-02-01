@@ -44,6 +44,12 @@ jobs:
       - run: cat /tmp/build.log
 
       - shell: Rscript {0}
+        run: install.packages('tinytex')
+
+      - shell: Rscript {0}
+        run: tinytex::install_tinytex()
+
+      - shell: Rscript {0}
         run: tinytex::parse_install('/tmp/build.log')
 
       - uses: r-lib/actions/check-r-package@v2
