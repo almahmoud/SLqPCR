@@ -37,6 +37,5 @@ jobs:
           extra-packages: any::rcmdcheck
           needs: check
 
-      - uses: r-lib/actions/check-r-package@v2
-      - run: R CMD INSTALL SLqPCR
-      - run: R CMD build --keep-empty-dirs --no-resave-data SLqPCR
+      - run: R CMD INSTALL .
+      - run: R CMD build --keep-empty-dirs --no-resave-data .
