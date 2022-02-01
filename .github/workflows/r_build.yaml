@@ -48,16 +48,18 @@ jobs:
       - uses: r-lib/actions/check-r-package@v2
         continue-on-error: true
 
-      - run: echo ::set-env name=REPOSITORY_NAME::$(echo "$GITHUB_REPOSITORY" | awk -F / '{print $2}' | sed -e "s/:refs//")
+      - run: echo ::set-output name=REPOSITORY_NAME::$(echo "$GITHUB_REPOSITORY" | awk -F / '{print $2}' | sed -e "s/:refs//")
         shell: bash
+        id: repo
 
       - run: |
-          echo ::set-env name=PKG_VERSION::$(grep "Version:" DESCRIPTION | awk -F ': ' '{print $2}')
+          echo ::set-output name=PKG_VERSION::$(grep "Version:" DESCRIPTION | awk -F ': ' '{print $2}')
         shell: bash
+        id: pkg
 
 
       - if: runner.os == 'macOS'
-        run: git clone https://github.com/Bioconductor/BBS && mkdir ${REPOSITORY_NAME}.buildbin-libdir && BBS/utils/build-universal.sh ${REPOSITORY_NAME}_${PKG_VERSION}.tar.gz /Library/Frameworks/R.framework/Resources/bin/R ${REPOSITORY_NAME}.buildbin-libdir
+        run: git clone https://github.com/Bioconductor/BBS && mkdir ${{ steps.repo.outputs.REPOSITORY_NAME }}.buildbin-libdir && BBS/utils/build-universal.sh ${{ steps.repo.outputs.REPOSITORY_NAME }}_${{ steps.pkg.outputs.PKG_VERSION }}.tar.gz /Library/Frameworks/R.framework/Resources/bin/R ${{ steps.repo.outputs.REPOSITORY_NAME }}.buildbin-libdir
 
       - if: runner.os == 'macOS'
-        run: R CMD INSTALL --preclean --no-multiarch --library=${REPOSITORY_NAME}.buildbin-libdir ${REPOSITORY_NAME}_${PKG_VERSION}.tar.gz
+        run: R CMD INSTALL --preclean --no-multiarch --library=${{ steps.repo.outputs.REPOSITORY_NAME }}.buildbin-libdir ${{ steps.repo.outputs.REPOSITORY_NAME }}_${{ steps.pkg.outputs.PKG_VERSION }}.tar.gz
