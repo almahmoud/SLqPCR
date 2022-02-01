@@ -59,7 +59,7 @@ jobs:
 
 
       - if: runner.os == 'macOS'
-        run: git clone https://github.com/Bioconductor/BBS && mkdir ${{ steps.repo.outputs.REPOSITORY_NAME }}.buildbin-libdir && BBS/utils/build-universal.sh ${{ steps.repo.outputs.REPOSITORY_NAME }}_${{ steps.pkg.outputs.PKG_VERSION }}.tar.gz /Library/Frameworks/R.framework/Resources/bin/R ${{ steps.repo.outputs.REPOSITORY_NAME }}.buildbin-libdir
+        run: git clone https://github.com/Bioconductor/BBS && mkdir ${{ steps.repo.outputs.REPOSITORY_NAME }}.buildbin-libdir && cd BBS/utils && gcc chown-rootadmin.c -o chown-rootadmin && sudo chown root:admin chown-rootadmin && sudo chmod 4750 chown-rootadmin && cd ../../ && bash BBS/utils/build-universal.sh ${{ steps.repo.outputs.REPOSITORY_NAME }}_${{ steps.pkg.outputs.PKG_VERSION }}.tar.gz /Library/Frameworks/R.framework/Resources/bin/R ${{ steps.repo.outputs.REPOSITORY_NAME }}.buildbin-libdir
 
       - if: runner.os == 'macOS'
         run: R CMD INSTALL --preclean --no-multiarch --library=${{ steps.repo.outputs.REPOSITORY_NAME }}.buildbin-libdir ${{ steps.repo.outputs.REPOSITORY_NAME }}_${{ steps.pkg.outputs.PKG_VERSION }}.tar.gz
