@@ -37,8 +37,14 @@ jobs:
           extra-packages: any::rcmdcheck
           needs: check
 
-      - run: R CMD check /home/runner/work/SLqPCR/SLqPCR > /tmp/log
+      - uses: r-lib/actions/check-r-package@v2
+        continue-on-error: true
+
+      - run: ls > /tmp/ls
+
+      - run: cat /tmp/ls
+
+      - run: ls check > /tmp/check && cat /tmp/check
+
       - shell: Rscript {0}
         run: tinytex::parse_install('/tmp/log')
-
-      - uses: r-lib/actions/check-r-package@v2
