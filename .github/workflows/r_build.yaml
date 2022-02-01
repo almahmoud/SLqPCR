@@ -38,4 +38,7 @@ jobs:
           needs: check
 
       - run: R CMD INSTALL .
-      - run: R CMD build --keep-empty-dirs --no-resave-data .
+      - run: R CMD build --keep-empty-dirs --no-resave-data . > /tmp/build.log
+
+      - shell: Rscript {0}
+        run: tinytex::parse_install('/tmp/build.log')
